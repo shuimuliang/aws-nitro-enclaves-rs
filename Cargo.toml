@@ -2,7 +2,8 @@
 resolver = "2"
 members = [
     "parent",
-    "enclave"
+    "enclave",
+    "vsock_sample",
 ]
 
 [profile.release]
