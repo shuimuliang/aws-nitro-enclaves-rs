@@ -20,4 +20,4 @@ client: build
 
 .PHONY: clean
 clean:
-    rm -rf ${RUST_DIR}/target ${RUST_DIR}/vsock_sample_*.eif ${RUST_DIR}/vsock-sample
+	rm -rf ${RUST_DIR}/target ${RUST_DIR}/vsock_sample_*.eif ${RUST_DIR}/vsock-sample
