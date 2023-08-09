@@ -28,7 +28,8 @@ pub fn send_loop(fd: RawFd, buf: &[u8], len: u64) -> Result<(), String> {
     while send_bytes < len {
         let size = match send(fd, &buf[send_bytes..len], MsgFlags::empty()) {
             Ok(size) => size,
-            Err(nix::Error::Sys(EINTR)) => 0,
+            Err(nix::Error::EINTR) => 0,
+            // Err(nix::Error::Sys(EINTR)) => 0,
             Err(err) => return Err(format!("{:?}", err)),
         };
         send_bytes += size;
@@ -45,7 +46,7 @@ pub fn recv_loop(fd: RawFd, buf: &mut [u8], len: u64) -> Result<(), String> {
     while recv_bytes < len {
         let size = match recv(fd, &mut buf[recv_bytes..len], MsgFlags::empty()) {
             Ok(size) => size,
-            Err(nix::Error::Sys(EINTR)) => 0,
+            Err(nix::Error::EINTR) => 0,
             Err(err) => return Err(format!("{:?}", err)),
         };
         recv_bytes += size;

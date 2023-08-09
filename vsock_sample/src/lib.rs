@@ -7,7 +7,7 @@ use protocol_helpers::{recv_loop, recv_u64, send_loop, send_u64};
 
 use nix::sys::socket::listen as listen_vsock;
 use nix::sys::socket::{accept, bind, connect, shutdown, socket};
-use nix::sys::socket::{AddressFamily, Shutdown, SockAddr, SockFlag, SockType};
+use nix::sys::socket::{AddressFamily, Shutdown, SockAddr, SockaddrLike, SockFlag, SockType};
 use nix::unistd::close;
 use std::convert::TryInto;
 use std::os::unix::io::{AsRawFd, RawFd};
