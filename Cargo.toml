@@ -4,6 +4,7 @@ members = [
     "parent",
     "enclave",
     "vsock_sample",
+    "aws_dynamodb_kms_demo",
 ]
 
 [profile.release]
