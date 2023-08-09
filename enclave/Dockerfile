@@ -39,9 +39,9 @@ COPY --from=builder /etc/group /etc/group
 WORKDIR /myip
 
 # Copy our build
-COPY --from=builder /myip/target/x86_64-unknown-linux-musl/release/vsock_sample ./
+COPY --from=builder /myip/target/x86_64-unknown-linux-musl/release/enclave_server ./
 
 # Use an unprivileged user.
 USER myip:myip
 
-CMD ["./myip/vsock-sample", "client", "--cid", "3",  "--port", "5005"]
+CMD ["./myip/enclave_server", "-p", "7878"]
