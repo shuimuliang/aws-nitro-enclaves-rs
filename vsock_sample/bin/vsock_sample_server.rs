@@ -1,11 +1,11 @@
 use byteorder::{ByteOrder, LittleEndian};
 use clap::Parser;
 use std::io::Read;
-use std::io::Write;
+// use std::io::Write;
 use std::mem::size_of;
 use vsock::{VsockAddr, VsockListener, VsockStream};
 
-fn handle_client(mut stream: VsockStream) {
+fn handle_client(mut stream: VsockStream) -> Result<(), String>{
     // Buffer to hold the size of the incoming data
     let mut size_buf = [0; size_of::<u64>()];
     stream.read_exact(&mut size_buf).unwrap();
@@ -22,6 +22,8 @@ fn handle_client(mut stream: VsockStream) {
         String::from_utf8(buffer.to_vec())
             .map_err(|err| format!("The received bytes are not UTF-8: {:?}", err))?
     );
+
+    Ok(())
 }
 
 #[derive(Debug, Parser)]
@@ -40,6 +42,6 @@ fn main() {
     for stream in listener.incoming() {
         let stream = stream.unwrap();
 
-        handle_client(stream);
+        let _ = handle_client(stream);
     }
 }
