@@ -1,11 +1,11 @@
+use byteorder::{ByteOrder, LittleEndian};
+use clap::Parser;
 use std::io::Read;
 use std::io::Write;
 use std::mem::size_of;
 use vsock::{VsockAddr, VsockListener, VsockStream};
-use byteorder::{ByteOrder, LittleEndian};
-// use vsock_sample::protocol_helpers::{recv_u64, recv_loop};
-fn handle_client(mut stream: VsockStream) {
 
+fn handle_client(mut stream: VsockStream) {
     // Buffer to hold the size of the incoming data
     let mut size_buf = [0; size_of::<u64>()];
     stream.read_exact(&mut size_buf).unwrap();
@@ -24,8 +24,6 @@ fn handle_client(mut stream: VsockStream) {
     );
 }
 
-use clap::Parser;
-
 #[derive(Debug, Parser)]
 struct Opt {
     /// The encryption key.
@@ -34,9 +32,7 @@ struct Opt {
 }
 
 fn main() {
-    let Opt {
-        port,
-    } = Opt::parse();
+    let Opt { port } = Opt::parse();
 
     let listener = VsockListener::bind(&VsockAddr::new(libc::VMADDR_CID_ANY, port))
         .expect("bind and listen failed");
