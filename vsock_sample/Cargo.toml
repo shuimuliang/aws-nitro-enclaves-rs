@@ -8,7 +8,6 @@ edition = "2021"
 [[bin]]
 name = "vsock_sample_server"
 path = "bin/vsock_sample_server.rs"
-src = ""
 
 [dependencies]
 byteorder = "1.4.3"
