@@ -17,6 +17,9 @@ fn handle_client(mut stream: VsockStream) -> Result<(), String>{
     let mut buffer = vec![0; size as usize];
     stream.read_exact(&mut buffer).unwrap();
 
+    // TODO: dispatch json payload, generateAccount, sign
+    // TODO: batch sign
+
     println!(
         "{}",
         String::from_utf8(buffer.to_vec())
