@@ -44,9 +44,9 @@ COPY --from=builder /etc/group /etc/group
 WORKDIR /myip
 
 # Copy our build
-COPY --from=builder /myip/target/${TARGETPLATFORM}/release/vsock_sample_client ./
+COPY --from=builder /myip/target/${TARGETPLATFORM}/release/vsock-sample-client ./
 
 # Use an unprivileged user.
 USER myip:myip
 
-CMD ["./myip/vsock_sample_client", "-c", "16", "-p", "7878"]
+CMD ["./myip/vsock-sample-client", "-c", "16", "-p", "7878"]

@@ -6,12 +6,12 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [[bin]]
-name = "vsock_sample_server"
-path = "bin/vsock_sample_server.rs"
+name = "vsock-sample-server"
+path = "bin/vsock-sample-server.rs"
 
 [[bin]]
-name = "vsock_sample_client"
-path = "bin/vsock_sample_client.rs"
+name = "vsock-sample-client"
+path = "bin/vsock-sample-client.rs"
 
 [dependencies]
 anyhow = "1.0.73"
