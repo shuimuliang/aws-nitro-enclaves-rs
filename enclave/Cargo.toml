@@ -21,3 +21,9 @@ anychain-ethereum = "0.1.1"
 base64 = "0.21.2"
 libsecp256k1 = "0.7.1"
 rand = "0.8.5"
+
+[profile.release]
+strip = true       # Automatically strip symbols from the binary
+opt-level = "s"    # Optimize for size
+lto = true         # Enable link time optimization
+codegen-units = 1  # Maximize size reduction optimizations
