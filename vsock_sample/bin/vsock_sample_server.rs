@@ -5,7 +5,7 @@ use std::io::Read;
 use std::mem::size_of;
 use vsock::{VsockAddr, VsockListener, VsockStream};
 
-fn handle_client(mut stream: VsockStream) -> Result<(), String>{
+fn handle_client(mut stream: VsockStream) -> Result<(), String> {
     // Buffer to hold the size of the incoming data
     let mut size_buf = [0; size_of::<u64>()];
     stream.read_exact(&mut size_buf).unwrap();
@@ -31,12 +31,12 @@ fn handle_client(mut stream: VsockStream) -> Result<(), String>{
 
 #[derive(Debug, Parser)]
 struct Opt {
-    /// The encryption key.
+    /// server virtio port
     #[structopt(short, long)]
     port: u32,
 }
 
-fn main() {
+fn main() -> Result<(), anyhow::Error> {
     let Opt { port } = Opt::parse();
 
     let listener = VsockListener::bind(&VsockAddr::new(libc::VMADDR_CID_ANY, port))
@@ -47,4 +47,6 @@ fn main() {
 
         let _ = handle_client(stream);
     }
+
+    Ok(())
 }

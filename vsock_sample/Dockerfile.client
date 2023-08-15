@@ -49,4 +49,4 @@ COPY --from=builder /myip/target/${TARGETPLATFORM}/release/vsock_sample_client .
 # Use an unprivileged user.
 USER myip:myip
 
-CMD ["./myip/vsock_sample_client", "-p", "7878"]
+CMD ["./myip/vsock_sample_client", "-c", "16", "-p", "7878"]
