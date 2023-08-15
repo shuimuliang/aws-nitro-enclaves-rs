@@ -9,6 +9,10 @@ edition = "2021"
 name = "vsock_sample_server"
 path = "bin/vsock_sample_server.rs"
 
+[[bin]]
+name = "vsock_sample_client"
+path = "bin/vsock_sample_client.rs"
+
 [dependencies]
 byteorder = "1.4.3"
 clap = { version = "4.3.21", features = ["derive"]}
@@ -17,4 +21,8 @@ log = "0.4.19"
 nix = "0.26.2"
 vsock = "0.3.0"
 
-
+[profile.release]
+strip = true       # Automatically strip symbols from the binary
+opt-level = "s"    # Optimize for size
+lto = true         # Enable link time optimization
+codegen-units = 1  # Maximize size reduction optimizations
