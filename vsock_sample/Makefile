@@ -12,11 +12,11 @@ build:
 
 server:
 	docker build --build-arg TARGETPLATFORM=$(ARCH)-unknown-linux-musl -t vsock-sample-server -f Dockerfile.server .
-	nitro-cli build-enclave --docker-uri vsock-sample-server:latest --output-file vsock_sample_server.eif
+	nitro-cli build-enclave --docker-uri vsock-sample-server:latest --output-file vsock-sample-server.eif
 
 client:
 	docker build --build-arg TARGETPLATFORM=$(ARCH)-unknown-linux-musl -t vsock-sample-client -f Dockerfile.client .
-	nitro-cli build-enclave --docker-uri vsock-sample-client:latest --output-file vsock_sample_client.eif
+	nitro-cli build-enclave --docker-uri vsock-sample-client:latest --output-file vsock-sample-client.eif
 
 .PHONY: clean
 clean:
