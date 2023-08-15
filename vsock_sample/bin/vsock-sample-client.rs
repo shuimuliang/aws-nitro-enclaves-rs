@@ -1,8 +1,8 @@
 use clap::Parser;
-use std::io::Write;
+// use std::io::Write;
+use serde_json::Map;
 use vsock::{VsockAddr, VsockStream};
 use vsock_sample::{build_payload, send_message};
-use serde_json::Map;
 
 #[derive(Debug, Parser)]
 struct Opt {

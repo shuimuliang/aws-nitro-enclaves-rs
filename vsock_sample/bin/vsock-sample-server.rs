@@ -2,6 +2,7 @@ use byteorder::{ByteOrder, LittleEndian};
 use clap::Parser;
 use std::io::Read;
 // use std::io::Write;
+use serde_json::Value;
 use std::mem::size_of;
 use vsock::{VsockAddr, VsockListener, VsockStream};
 
@@ -14,17 +15,19 @@ fn handle_client(mut stream: VsockStream) -> Result<(), String> {
     let size = LittleEndian::read_u64(&size_buf);
 
     // Create a buffer of the size we just read
-    let mut buffer = vec![0; size as usize];
-    stream.read_exact(&mut buffer).unwrap();
-
-    // TODO: dispatch json payload, generateAccount, sign
-    // TODO: batch sign
+    let mut payload_buffer = vec![0; size as usize];
+    stream.read_exact(&mut payload_buffer).unwrap();
 
     println!(
         "{}",
-        String::from_utf8(buffer.to_vec())
+        String::from_utf8(payload_buffer.to_vec())
             .map_err(|err| format!("The received bytes are not UTF-8: {:?}", err))?
     );
+
+    // Decode the payload as JSON
+    let json: Value = serde_json::from_slice(&payload_buffer)
+        .map_err(|err| format!("Failed to decode JSON: {:?}", err))?;
+    println!("{}", json);
 
     Ok(())
 }

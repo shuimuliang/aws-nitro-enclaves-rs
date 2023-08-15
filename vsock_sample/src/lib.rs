@@ -1,8 +1,8 @@
 use byteorder::{ByteOrder, LittleEndian};
+use serde_json::{json, Map, Value};
 use std::io::Write;
 use std::mem::size_of;
 use vsock::VsockStream;
-use serde_json::{json, Map, Value};
 
 pub fn build_payload(method_name: &str, credential: Map<String, Value>, key_id: String) -> String {
     let mut payload: Map<String, Value> = Map::new();
@@ -20,13 +20,17 @@ pub fn send_message(stream: &mut VsockStream, msg: String) -> Result<(), anyhow:
         .len()
         .try_into()
         .map_err(|err: std::num::TryFromIntError| anyhow::anyhow!("{:?}", err))?;
-    let mut header_buf = [0u8; size_of::<u64>()];
+    let mut header_buf = [0; size_of::<u64>()];
     LittleEndian::write_u64(&mut header_buf, payload_len);
-    stream.write(&header_buf).map_err(|err| anyhow::anyhow!("{:?}", err))?;
+    stream
+        .write(&header_buf)
+        .map_err(|err| anyhow::anyhow!("{:?}", err))?;
 
     // write message body
     let payload_buf = msg.as_bytes();
-    stream.write_all(payload_buf).map_err(|err| anyhow::anyhow!("{:?}", err))?;
+    stream
+        .write_all(payload_buf)
+        .map_err(|err| anyhow::anyhow!("{:?}", err))?;
 
     Ok(())
 }
