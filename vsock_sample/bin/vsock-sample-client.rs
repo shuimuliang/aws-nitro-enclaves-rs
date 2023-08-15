@@ -1,8 +1,7 @@
 use clap::Parser;
-// use std::io::Write;
-use serde_json::Map;
+use serde_json::{Map, Value};
 use vsock::{VsockAddr, VsockStream};
-use vsock_sample::{build_payload, send_message};
+use vsock_sample::{build_payload, send_message, recv_message};
 
 #[derive(Debug, Parser)]
 struct Opt {
@@ -30,6 +29,12 @@ fn main() -> Result<(), anyhow::Error> {
     send_message(&mut stream, payload)?;
 
     // recv response
+    let response = recv_message(&mut stream).map_err(|err| anyhow::anyhow!("{:?}", err))?;
+
+    // Decode the payload as JSON
+    let json: Value = serde_json::from_slice(&response)
+        .map_err(|err| anyhow::anyhow!("{:?}", err))?;
+    println!("response {}", json);
 
     Ok(())
 }

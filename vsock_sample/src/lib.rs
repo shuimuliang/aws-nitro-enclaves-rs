@@ -1,15 +1,24 @@
 use byteorder::{ByteOrder, LittleEndian};
 use serde_json::{json, Map, Value};
-use std::io::Write;
+use std::io::{Read, Write};
 use std::mem::size_of;
 use vsock::VsockStream;
 
 pub fn build_payload(method_name: &str, credential: Map<String, Value>, key_id: String) -> String {
     let mut payload: Map<String, Value> = Map::new();
 
-    payload.insert("apiCall".to_string(), json!(method_name));
+    payload.insert("apiRequest".to_string(), json!(method_name));
     payload.insert("credential".to_string(), json!(credential));
     payload.insert("keyId".to_string(), json!(key_id));
+
+    json!(payload).to_string()
+}
+
+pub fn build_response(method_name: &str, content: Map<String, Value>) -> String {
+    let mut payload: Map<String, Value> = Map::new();
+
+    payload.insert("apiResponse".to_string(), json!(method_name));
+    payload.insert("content".to_string(), json!(content));
 
     json!(payload).to_string()
 }
@@ -33,4 +42,20 @@ pub fn send_message(stream: &mut VsockStream, msg: String) -> Result<(), anyhow:
         .map_err(|err| anyhow::anyhow!("{:?}", err))?;
 
     Ok(())
+}
+
+pub fn recv_message(stream: &mut VsockStream) -> Result<Vec<u8>, anyhow::Error> {
+
+    // Buffer to hold the size of the incoming data
+    let mut size_buf = [0; size_of::<u64>()];
+    stream.read_exact(&mut size_buf).unwrap();
+
+    // Convert the size buffer to u64
+    let size = LittleEndian::read_u64(&size_buf);
+
+    // Create a buffer of the size we just read
+    let mut payload_buffer = vec![0; size as usize];
+    stream.read_exact(&mut payload_buffer).unwrap();
+
+    Ok(payload_buffer)
 }
