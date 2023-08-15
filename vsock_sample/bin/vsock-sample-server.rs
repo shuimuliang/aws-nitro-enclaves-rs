@@ -5,7 +5,7 @@ use vsock_sample::{build_response, send_message, recv_message};
 
 fn handle_client(mut stream: VsockStream) -> Result<(), anyhow::Error> {
 
-    let mut payload_buffer = recv_message(&mut stream).map_err(|err| anyhow::anyhow!("{:?}", err))?;
+    let payload_buffer = recv_message(&mut stream).map_err(|err| anyhow::anyhow!("{:?}", err))?;
 
     // Decode the payload as JSON
     let json: Value = serde_json::from_slice(&payload_buffer)
