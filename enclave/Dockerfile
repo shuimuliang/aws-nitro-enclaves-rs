@@ -44,9 +44,9 @@ COPY --from=builder /etc/group /etc/group
 WORKDIR /myip
 
 # Copy our build
-COPY --from=builder /myip/target/${TARGETPLATFORM}/release/enclave_server ./
+COPY --from=builder /myip/target/${TARGETPLATFORM}/release/enclave-server ./
 
 # Use an unprivileged user.
 USER myip:myip
 
-CMD ["./myip/enclave_server", "-p", "7878"]
+CMD ["./myip/enclave-server", "-p", "7878"]
