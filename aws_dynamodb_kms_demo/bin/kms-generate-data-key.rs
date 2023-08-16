@@ -38,6 +38,7 @@ async fn make_key(client: &Client, key: &str) -> Result<(), Error> {
 
     // Did we get an encrypted blob?
     let blob = resp.ciphertext_blob.expect("Could not get encrypted text");
+    resp.
     let bytes = blob.as_ref();
 
     let s = general_purpose::STANDARD.encode(bytes);

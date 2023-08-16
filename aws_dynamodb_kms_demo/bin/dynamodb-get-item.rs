@@ -7,7 +7,7 @@
 
 use aws_dynamodb_kms_demo::{
     make_config,
-    scenario::add::{add_item, Item},
+    scenario::query::{query_item},
     scenario::error::Error,
     BaseOpt,
 };
@@ -20,22 +20,6 @@ struct Opt {
     /// account name for this account, used for identify wallet
     #[structopt(short, long)]
     name: String,
-
-    /// kms key id which used for encryption on the wallet private key
-    #[structopt(short, long)]
-    key_id: String,
-
-    /// account name for this account, used for identify wallet
-    #[structopt(short, long)]
-    encrypted_private_key: String,
-
-    /// the address key of the wallet
-    #[structopt(short, long)]
-    address: String,
-
-    /// the data key used to encrypt the private key
-    #[structopt(short = 'd', long)]
-    encrypted_data_key: String,
 
     /// The table name.
     #[structopt(short, long)]
@@ -51,10 +35,6 @@ struct Opt {
 ///
 /// * `-t TABLE` - The name of the table.
 /// * `-n name` -
-/// * `-k key_id` -
-/// * `-e encrypted_private_key` -
-/// * `-a address` -
-/// * `-d encrypted_data_key` -
 /// * `[-r REGION]` - The region in which the table is created.
 ///   If not supplied, uses the value of the **AWS_REGION** environment variable.
 ///   If the environment variable is not set, defaults to **us-west-2**.
@@ -70,10 +50,6 @@ async fn main() {
 async fn run_example(
     Opt {
         name,
-        key_id,
-        encrypted_private_key,
-        address,
-        encrypted_data_key,
         table,
         base,
     }: Opt,
@@ -81,7 +57,7 @@ async fn run_example(
     let shared_config = make_config(base).await?;
     let client = Client::new(&shared_config);
 
-    add_item(&client, Item { name, key_id, encrypted_private_key, address, encrypted_data_key }, &table).await?;
+    query_item(&client, &name, &table).await?;
 
     Ok(())
 }

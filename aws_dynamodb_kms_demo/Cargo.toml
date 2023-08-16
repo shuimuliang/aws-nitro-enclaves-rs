@@ -14,6 +14,10 @@ name = "aws-dynamodb-add-item"
 path = "bin/dynamodb-add-item.rs"
 
 [[bin]]
+name = "aws-dynamodb-get-item"
+path = "bin/dynamodb-get-item.rs"
+
+[[bin]]
 name = "aws-kms-create-key"
 path = "bin/kms-create-key.rs"
 
