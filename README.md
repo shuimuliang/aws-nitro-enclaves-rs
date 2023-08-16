@@ -11,28 +11,28 @@ build a secure and trusted execution environment based on nitro enclave3
 
 ### Account Generation Workflow
 
-1. The parent instance client receives the generateAccount API call.
-2. The getlAMToken() function is called to obtain IAM Role credentials.
-3. The credentials are sent via vsock and a request for the generateAccount API call is made.
-4. An encrypted wallet account is generated in Nitro Enclave.
-5. Credentials and attestation are used to request the KMS generateDataKey API call.
-6. Account information is encrypted using the datakey.
-7. The encrypted account information is sent to the parent instance via vsock.
-8. The API is called to save the encrypted account information to DynamoDB.
+1. parent instance client receive generateccount API call
+2. call getlAMToken function which get credential of IAM Role
+3. send credential and generateAccount API call via vsock
+4. generate account in Nitro Enclave
+5. call KMS API generateDataKey with credential and attestation
+6. encrypt the account content with datakey
+7. send the encrypted account content to parent instance via vsock
+8. call API to save the encrypted account content to dynamodb
 
 ## Sign Signature by Private Key
 ![crypto-wallet-application-based-on-nitro-enclaves-and-aws-eks3.png](docs%2Fimages%2Fcrypto-wallet-application-based-on-nitro-enclaves-and-aws-eks3.png)
 
 ### Transaction Signature Workflow
 
-1. The parent instance client receives a sign API call.
-2. The getlAMToken() function is called to obtain IAM Role credentials.
-3. The credentials are sent via vsock and the API call is signed.
-4. The encrypted data key is decrypted using the KMS API.
-5. The encrypted wallet private key is decrypted using the data key.
-6. The decrypted wallet private key is used to sign the message.
-7. The signature is sent back to the parent instance via vsock.
- 
+1. parent instance client receive sign API call
+2. call getlAMToken function which get credential of IAM Role
+3. send credential and sign API call via vsock
+4. decrypt the encrypted datakey with KMS API decrypt
+5. decrypt the encrypted wallet's private key with datakey
+6. sign the message with wallet's private key
+7. send signature to parent instance via vsock
+
 ## Core Components
 ### Nitro Enclaves vsock client
 ### Nitro Enclaves vsock server
