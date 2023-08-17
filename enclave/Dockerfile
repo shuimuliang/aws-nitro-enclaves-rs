@@ -37,6 +37,8 @@ RUN cargo build --target $TARGETPLATFORM --release
 FROM alpine
 ARG TARGETPLATFORM
 
+ENV REGION ap-east-1
+
 # Import from builder.
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group

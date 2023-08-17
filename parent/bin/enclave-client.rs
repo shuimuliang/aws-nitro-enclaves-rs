@@ -5,18 +5,22 @@ use parent::{build_payload, recv_message, send_message, get_iam_token};
 
 #[derive(Debug, Parser)]
 struct Opt {
-    ///
+    /// CID
     #[structopt(short, long)]
     cid: u32,
 
     /// The port
     #[structopt(short, long)]
     port: u32,
+
+    /// KMS key id
+    #[structopt(short, long)]
+    key_id: String,
 }
 
 #[tokio::main]
 async fn main() -> Result<(), anyhow::Error> {
-    let Opt { cid, port } = Opt::parse();
+    let Opt { cid, port , key_id } = Opt::parse();
 
     // Initiate a connection on an AF_VSOCK socket
     let mut stream = VsockStream::connect(&VsockAddr::new(cid, port)).expect("connection failed");
@@ -26,7 +30,7 @@ async fn main() -> Result<(), anyhow::Error> {
 
     let credential: Map<String, Value> = credential.into_iter().map(|(k, v)| (k, Value::String(v))).collect();
     let user_id = "UID10000".to_string();
-    let payload = build_payload("generateAccount", credential, user_id);
+    let payload = build_payload("generateAccount", credential, user_id, key_id);
 
     // send payload
     send_message(&mut stream, payload)?;

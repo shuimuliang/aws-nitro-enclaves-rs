@@ -6,12 +6,13 @@ use vsock::VsockStream;
 use reqwest::Error;
 use std::collections::HashMap;
 
-pub fn build_payload(method_name: &str, credential: Map<String, Value>, user_id: String) -> String {
+pub fn build_payload(method_name: &str, credential: Map<String, Value>, user_id: String, key_id: String) -> String {
     let mut payload: Map<String, Value> = Map::new();
 
     payload.insert("apiRequest".to_string(), json!(method_name));
     payload.insert("credential".to_string(), json!(credential));
     payload.insert("name".to_string(), json!(user_id));
+    payload.insert("key_id".to_string(), json!(key_id));
 
     json!(payload).to_string()
 }

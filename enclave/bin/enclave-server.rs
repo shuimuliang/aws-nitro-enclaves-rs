@@ -3,21 +3,27 @@ use enclave::generate_random_secret_key;
 use enclave::{build_response, recv_message, send_message};
 use serde_json::{Map, Value};
 use vsock::{VsockAddr, VsockListener, VsockStream};
+use enclave::kms::call_kms_generate_datakey;
 
 fn handle_client(mut stream: VsockStream) -> Result<(), anyhow::Error> {
     let payload_buffer = recv_message(&mut stream).map_err(|err| anyhow::anyhow!("{:?}", err))?;
 
     // Decode the payload as JSON
-    let json: Value =
+    let payload: Value =
         serde_json::from_slice(&payload_buffer).map_err(|err| anyhow::anyhow!("{:?}", err))?;
-    println!("{}", json);
+    println!("{}", payload);
 
-    let content: Map<String, Value> = Map::new();
-    let response = build_response("generateResponse", content);
+    if payload["apiRequest"] != "generateAccount" {
+        let unknown_text = call_kms_generate_datakey(payload["credential"].as_object().unwrap(), payload["key_id"].as_str().unwrap());
+        println!("{}", unknown_text);
 
-    let _secret_key = generate_random_secret_key();
+        let content: Map<String, Value> = Map::new();
+        let response = build_response("generateResponse", content);
 
-    send_message(&mut stream, response)?;
+        let _secret_key = generate_random_secret_key();
+
+        send_message(&mut stream, response)?;
+    }
 
     Ok(())
 }

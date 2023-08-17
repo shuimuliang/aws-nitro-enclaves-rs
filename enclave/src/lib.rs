@@ -8,6 +8,8 @@ use std::io::{Read, Write};
 use std::mem::size_of;
 use vsock::VsockStream;
 
+pub mod kms;
+
 pub fn generate_random_secret_key() -> String {
     let mut rng = OsRng;
 
