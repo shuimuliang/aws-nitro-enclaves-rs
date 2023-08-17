@@ -26,15 +26,16 @@ ARG TARGETPLATFORM
 WORKDIR /app
 
 # Copy our build
-COPY --from=builder /app/target/${TARGETPLATFORM}/release/enclave-server ./
+COPY --from=builder /app/target/${TARGETPLATFORM}/release/enclave-server /app/enclave-server
 # Copy kmstool_enclave_cli
 COPY --from=builder /app/kmstool_enclave_cli /app/kmstool_enclave_cli
-COPY --from=builder /app/libnsm.so /myip/libnsm.so
 COPY --from=builder /app/libnsm.so /usr/lib64/libnsm.so
 
 ENV REGION ap-east-1
-ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib64
+ENV LD_LIBRARY_PATH=:/usr/lib64
 
+RUN ls -lha /app
 RUN chmod +x /app/kmstool_enclave_cli
+RUN chmod +x /app/enclave-server
 
 CMD ["./app/enclave-server", "-p", "7878"]
