@@ -45,6 +45,9 @@ WORKDIR /myip
 
 # Copy our build
 COPY --from=builder /myip/target/${TARGETPLATFORM}/release/enclave-server ./
+COPY --from=builder /myip/kmstool_enclave_cli ./
+COPY --from=builder /myip/libnsm.so /usr/lib64/
+RUN chmod +x /myip/kmstool_enclave_cli
 
 # Use an unprivileged user.
 USER myip:myip
