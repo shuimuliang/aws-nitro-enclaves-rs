@@ -36,16 +36,26 @@ async fn make_key(client: &Client, key: &str) -> Result<(), Error> {
         .send()
         .await?;
 
-    // Did we get an encrypted blob?
-    let blob = resp.ciphertext_blob.expect("Could not get encrypted text");
-    resp.
-    let bytes = blob.as_ref();
+    {
+        // Did we get an encrypted blob?
+        let blob = resp.ciphertext_blob.expect("Could not get encrypted text");
+        let bytes = blob.as_ref();
 
-    let s = general_purpose::STANDARD.encode(bytes);
+        let datakey_cipher_text = general_purpose::STANDARD.encode(bytes);
 
-    println!();
-    println!("Data key:");
-    println!("{}", s);
+        println!("datakey_cipher_text:");
+        println!("{}", datakey_cipher_text);
+    }
+
+    {
+        let blob = resp.plaintext.expect("Could not get plaintext");
+        let bytes = blob.as_ref();
+
+        let datakey_plaintext = general_purpose::STANDARD.encode(bytes);
+
+        println!("datakey_plaintext:");
+        println!("{}", datakey_plaintext);
+    }
 
     Ok(())
 }

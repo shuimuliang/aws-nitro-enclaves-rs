@@ -9,10 +9,7 @@ pub async fn query_item(client: &Client, name: &String, table: &String) -> Resul
     let item = client
         .get_item()
         .table_name(table)
-        .key(
-            "name",
-            name_av,
-        )
+        .key("name", name_av)
         .send()
         .await?;
 

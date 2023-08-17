@@ -30,17 +30,32 @@ cargo run --bin aws-dynamodb-get-item -- -r ap-east-1 -t AccountTable -n UID1000
 cargo run --bin aws-kms-create-key -- -r ap-east-1
 ```
 
-#### Encrypt data using the KMS key:
-```sh
-cargo run --bin aws-kms-encrypt -- -r ap-east-1 -k 0a5713c9-7d29-4b8e-aa0e-8e27e58ac6e1 -o /tmp/kms-encrypt.txt -t KeyId1
-```
-
-#### Decrypt data using the KMS key:
-```sh
-cargo run --bin aws-kms-decrypt -- -r ap-east-1 -k 0a5713c9-7d29-4b8e-aa0e-8e27e58ac6e1 -i /tmp/kms-encrypt.txt
-```
-
 #### Generate a data key using the KMS key:
 ```sh
 cargo run --bin aws-kms-generate-data-key -- -r ap-east-1 -k 0a5713c9-7d29-4b8e-aa0e-8e27e58ac6e1
 ```
+
+#### Encrypt a private key using the KMS Data key:
+```sh
+cargo run --bin aws-kms-encrypt-by-data-key -- \
+  -d gnbLKIT08rBb6beAGBqyhBb+usZKBSQ3DgAyDFEolzs= \
+  -p 0x3a1076bf45ab87712ad64ccb3b10217737f7faacbf2872e88fdd9a537d8fe266
+```
+
+#### Decrypt a private key using the KMS Data key:
+```sh
+cargo run --bin aws-kms-decrypt-by-data-key -- \
+  -d gnbLKIT08rBb6beAGBqyhBb+usZKBSQ3DgAyDFEolzs= \
+  -p K20TvEKnpVnfHIcRDG4i+8hT6VoquHlZH7PuDtzxqvazlsYcZFkOj9eUpi5/kMo4LyK95Fdv6wfcwki0Fw1pl/2Z22He41dZCaZxhX98NvBiXA==
+```
+
+#### (deprecated) Encrypt data using the KMS key:
+```sh
+cargo run --bin aws-kms-encrypt -- -r ap-east-1 -k 0a5713c9-7d29-4b8e-aa0e-8e27e58ac6e1 -o /tmp/kms-encrypt.txt -t KeyId1
+```
+
+#### (deprecated) Decrypt data using the KMS key:
+```sh
+cargo run --bin aws-kms-decrypt -- -r ap-east-1 -k 0a5713c9-7d29-4b8e-aa0e-8e27e58ac6e1 -i /tmp/kms-encrypt.txt
+```
+

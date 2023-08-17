@@ -6,7 +6,6 @@
 use aws_sdk_dynamodb::types::{AttributeValue, ReturnValue};
 use aws_sdk_dynamodb::{Client, Error};
 
-
 /// For add_item and query_item
 pub struct Item {
     pub name: String,
@@ -57,4 +56,3 @@ pub async fn add_item(client: &Client, item: Item, table: &String) -> Result<(),
 
     Ok(())
 }
-

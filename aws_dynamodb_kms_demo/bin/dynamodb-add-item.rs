@@ -81,7 +81,18 @@ async fn run_example(
     let shared_config = make_config(base).await?;
     let client = Client::new(&shared_config);
 
-    add_item(&client, Item { name, key_id, encrypted_private_key, address, encrypted_data_key }, &table).await?;
+    add_item(
+        &client,
+        Item {
+            name,
+            key_id,
+            encrypted_private_key,
+            address,
+            encrypted_data_key,
+        },
+        &table,
+    )
+    .await?;
 
     Ok(())
 }

@@ -6,10 +6,7 @@
 #![allow(clippy::result_large_err)]
 
 use aws_dynamodb_kms_demo::{
-    make_config,
-    scenario::query::{query_item},
-    scenario::error::Error,
-    BaseOpt,
+    make_config, scenario::error::Error, scenario::query::query_item, BaseOpt,
 };
 use aws_sdk_dynamodb::{error::DisplayErrorContext, Client};
 use clap::Parser;
@@ -47,13 +44,7 @@ async fn main() {
     }
 }
 
-async fn run_example(
-    Opt {
-        name,
-        table,
-        base,
-    }: Opt,
-) -> Result<(), Error> {
+async fn run_example(Opt { name, table, base }: Opt) -> Result<(), Error> {
     let shared_config = make_config(base).await?;
     let client = Client::new(&shared_config);
 
