@@ -1,11 +1,13 @@
 use std::process::Command;
 use std::env;
 use serde_json::{Map, Value};
-
+use std::fs;
 pub fn call_kms_generate_datakey(credential: &Map<String, Value>, key_id: &str) -> String {
     let aws_access_key_id = credential["aws_access_key_id"].as_str().unwrap();
     let aws_secret_access_key = credential["aws_secret_access_key"].as_str().unwrap();
     let aws_session_token = credential["aws_session_token"].as_str().unwrap();
+
+    let _ = list_files("/myip");
 
     let output = Command::new("/myip/kmstool_enclave_cli")
         .args(&[
@@ -23,4 +25,18 @@ pub fn call_kms_generate_datakey(credential: &Map<String, Value>, key_id: &str) 
 
     let datakey_text = String::from_utf8_lossy(&output.stdout).to_string();
     datakey_text
+}
+
+fn list_files(directory: &str) -> std::io::Result<()> {
+    let entries = fs::read_dir(directory)?;
+
+    for entry in entries {
+        let entry = entry?;
+        let path = entry.path();
+        if path.is_file() {
+            println!("{}", path.display());
+        }
+    }
+
+    Ok(())
 }
