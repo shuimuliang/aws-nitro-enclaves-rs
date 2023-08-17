@@ -49,6 +49,13 @@ cargo run --bin aws-kms-decrypt-by-data-key -- \
   -p K20TvEKnpVnfHIcRDG4i+8hT6VoquHlZH7PuDtzxqvazlsYcZFkOj9eUpi5/kMo4LyK95Fdv6wfcwki0Fw1pl/2Z22He41dZCaZxhX98NvBiXA==
 ```
 
+#### Decrypt KMS Data key:
+```sh
+cargo run --bin aws-kms-decrypt-data-key -- \
+  -k 0a5713c9-7d29-4b8e-aa0e-8e27e58ac6e1 \
+  -d AQIDAHg7GwN+gKAgDZ0/L6q90F9t0vUeNYMZyeRjqvSQcWMlKwE2iKZnUfZ5oCWW2rSqQZFjAAAAfjB8BgkqhkiG9w0BBwagbzBtAgEAMGgGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQM/y0MA93t1BITErGiAgEQgDuKtv5ZuVbeTQ14QHsR5f82IpD8zhQdejMNc8+0FZUByt8f4mw/tO/+KZEiBOdl09YfCSjndlrFh6XaTw==
+```
+
 #### (deprecated) Encrypt data using the KMS key:
 ```sh
 cargo run --bin aws-kms-encrypt -- -r ap-east-1 -k 0a5713c9-7d29-4b8e-aa0e-8e27e58ac6e1 -o /tmp/kms-encrypt.txt -t KeyId1

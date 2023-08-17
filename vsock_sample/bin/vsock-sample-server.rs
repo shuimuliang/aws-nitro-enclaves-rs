@@ -1,18 +1,17 @@
 use clap::Parser;
-use serde_json::{Value, Map};
+use serde_json::{Map, Value};
 use vsock::{VsockAddr, VsockListener, VsockStream};
-use vsock_sample::{build_response, send_message, recv_message};
+use vsock_sample::{build_response, recv_message, send_message};
 
 fn handle_client(mut stream: VsockStream) -> Result<(), anyhow::Error> {
-
     let payload_buffer = recv_message(&mut stream).map_err(|err| anyhow::anyhow!("{:?}", err))?;
 
     // Decode the payload as JSON
-    let json: Value = serde_json::from_slice(&payload_buffer)
-        .map_err(|err| anyhow::anyhow!("{:?}", err))?;
+    let json: Value =
+        serde_json::from_slice(&payload_buffer).map_err(|err| anyhow::anyhow!("{:?}", err))?;
     println!("{}", json);
 
-    let content:Map<String, Value> = Map::new();
+    let content: Map<String, Value> = Map::new();
     let response = build_response("generateResponse", content);
     send_message(&mut stream, response)?;
 

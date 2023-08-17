@@ -34,6 +34,10 @@ name = "aws-kms-decrypt-by-data-key"
 path = "bin/kms-decrypt-by-data-key.rs"
 
 [[bin]]
+name = "aws-kms-decrypt-data-key"
+path = "bin/kms-decrypt-data-key.rs"
+
+[[bin]]
 name = "aws-kms-encrypt"
 path = "bin/kms-encrypt.rs"
 

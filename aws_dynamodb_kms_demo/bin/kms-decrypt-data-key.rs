@@ -6,12 +6,11 @@
 #![allow(clippy::result_large_err)]
 
 use aws_config::meta::region::RegionProviderChain;
-use aws_sdk_kms::types::DataKeySpec;
+use aws_sdk_kms::primitives::Blob;
 use aws_sdk_kms::{config::Region, meta::PKG_VERSION, Client, Error};
 use base64::{engine::general_purpose, Engine as _};
 use clap::Parser;
-use std::fs::File;
-use std::io::prelude::*;
+use std::fs;
 
 #[derive(Debug, Parser)]
 struct Opt {
@@ -23,54 +22,48 @@ struct Opt {
     #[structopt(short, long)]
     key: String,
 
+    /// The name of the input file with encrypted text to decrypt.
+    #[structopt(short, long)]
+    data_key: String,
+
     /// Whether to display additional information.
     #[structopt(short, long)]
     verbose: bool,
 }
 
-// Create a data key.
-// snippet-start:[kms.rust.generate-data-key]
-async fn make_key(client: &Client, key: &str) -> Result<(), Error> {
+// Decrypt a string.
+// snippet-start:[kms.rust.decrypt]
+async fn decrypt_key(client: &Client, key: &str, data_key: &str) -> Result<(), Error> {
+    // Open input text file and get contents as a string
+    // input is a base-64 encoded string, so decode it:
+    let data = general_purpose::STANDARD
+        .decode(data_key)
+        .map(Blob::new)
+        .expect("Input file does not contain valid base 64 characters.");
+
     let resp = client
-        .generate_data_key()
+        .decrypt()
         .key_id(key)
-        .key_spec(DataKeySpec::Aes256)
+        .ciphertext_blob(data)
         .send()
         .await?;
 
-    {
-        // Did we get an encrypted blob?
-        let blob = resp.ciphertext_blob.expect("Could not get encrypted text");
-        let bytes = blob.as_ref();
+    let inner = resp.plaintext.unwrap();
+    let bytes = inner.as_ref();
 
-        let datakey_cipher_text = general_purpose::STANDARD.encode(bytes);
-
-        println!("datakey_cipher_text:");
-        println!("{}", datakey_cipher_text);
-
-        // Write the datakey_cipher_text to a file
-        let mut file = File::create("/tmp/kms-encrypt.txt").unwrap();
-        file.write_all(datakey_cipher_text.as_bytes()).unwrap();
-    }
-
-    {
-        let blob = resp.plaintext.expect("Could not get plaintext");
-        let bytes = blob.as_ref();
-
-        let datakey_plaintext = general_purpose::STANDARD.encode(bytes);
-
-        println!("datakey_plaintext:");
-        println!("{}", datakey_plaintext);
-    }
+    // The 'bytes' variable should be equivalent to
+    // the result of decoding the base64 string, e.g: "l3p994w+hdqFzKwA3zuii6Lb9DsIfcpLfcAHl11goTY="
+    dbg!(&bytes);
 
     Ok(())
 }
-// snippet-end:[kms.rust.generate-data-key]
+// snippet-end:[kms.rust.decrypt]
 
-/// Creates an AWS KMS data key.
+/// Decrypts a string encrypted by AWS KMS.
 /// # Arguments
 ///
-/// * `[-k KEY]` - The name of the key.
+/// * `-k KEY` - The encryption key.
+/// * `-d Encrypted Data KEY` -
 /// * `[-r REGION]` - The Region in which the client is created.
 ///    If not supplied, uses the value of the **AWS_REGION** environment variable.
 ///    If the environment variable is not set, defaults to **us-west-2**.
@@ -79,6 +72,7 @@ async fn make_key(client: &Client, key: &str) -> Result<(), Error> {
 async fn main() -> Result<(), Error> {
     let Opt {
         key,
+        data_key,
         region,
         verbose,
     } = Opt::parse();
@@ -95,11 +89,12 @@ async fn main() -> Result<(), Error> {
             region_provider.region().await.unwrap().as_ref()
         );
         println!("Key:                {}", &key);
+        println!("Input:              {}", &data_key);
         println!();
     }
 
     let shared_config = aws_config::from_env().region(region_provider).load().await;
     let client = Client::new(&shared_config);
 
-    make_key(&client, &key).await
+    decrypt_key(&client, &key, &data_key).await
 }

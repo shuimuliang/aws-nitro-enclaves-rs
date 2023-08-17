@@ -1,8 +1,8 @@
 use clap::Parser;
+use enclave::generate_random_secret_key;
 use enclave::{build_response, recv_message, send_message};
 use serde_json::{Map, Value};
 use vsock::{VsockAddr, VsockListener, VsockStream};
-use enclave::generate_random_secret_key;
 
 fn handle_client(mut stream: VsockStream) -> Result<(), anyhow::Error> {
     let payload_buffer = recv_message(&mut stream).map_err(|err| anyhow::anyhow!("{:?}", err))?;

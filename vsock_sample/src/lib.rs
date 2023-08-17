@@ -45,7 +45,6 @@ pub fn send_message(stream: &mut VsockStream, msg: String) -> Result<(), anyhow:
 }
 
 pub fn recv_message(stream: &mut VsockStream) -> Result<Vec<u8>, anyhow::Error> {
-
     // Buffer to hold the size of the incoming data
     let mut size_buf = [0; size_of::<u64>()];
     stream.read_exact(&mut size_buf).unwrap();
