@@ -115,17 +115,17 @@ you need create a IAM Role which will be attached to EC2/EKS, it need have the a
 
 - **AWS DynamoDB**
 
-```
-Table name:
-AccountTable
+ Table Name:  AccountTable 
 
-Colume:
-KeyId: kms key id which used for encryption on the wallet private key
-Name: account name for this account, used for identify wallet
-EncryptedPrivateKey: encrypted wallet private key
-Address: the address key of the wallet
-EncryptedDataKey: the data key used to encrypt the private key
-``` 
+
+| Column               | Description                                         |
+| -------------------- | --------------------------------------------------- |
+| KeyId                | KMS key id used for encryption on the wallet private key |
+| Name                 | Account name for this account, used to identify wallet |
+| EncryptedPrivateKey  | Encrypted wallet private key                        |
+| Address              | The address key of the wallet                       |
+| EncryptedDataKey     | The data key used to encrypt the private key        |
+
 
 - **vsock-proxy** : before you start the enclave application, you should start the vsock-proxy for kms. below command with run the proxy on parent instance which will forward request on port 8000 to endpoint kms.ap-east-1.amazonaws.com on port 443. you should run it before run enclave
 ```sh
