@@ -22,6 +22,7 @@ RUN cargo build --target $TARGETPLATFORM --release
 ####################################################################################################
 FROM arm64v8/alpine
 ARG TARGETPLATFORM
+RUN apk add gcompat
 
 WORKDIR /app
 
@@ -35,6 +36,7 @@ ENV REGION ap-east-1
 ENV LD_LIBRARY_PATH="/usr/lib64":"/lib"
 
 RUN ls -lha /app
+RUN ls -lha /lib
 RUN chmod +x /app/kmstool_enclave_cli
 RUN chmod +x /app/enclave-server
 
