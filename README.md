@@ -67,9 +67,24 @@ make server
 
 ### parent client
 
-### AWS IAM
-#### IAM Role
+# important configurations
+when you try to run the Nitro Enclave application, you should configure below things
+
+- **AWS Region** : you need choose a region where you deploy your application, and you need set **ENV** in Dockerfile
+```
+ENV REGION ap-east-1
+```
+
+- **AWS KMS**
+you need create a **Symmetric** kms key, which used for **Encrypt and decrypt**
+```sh
+cargo run --bin aws-kms-create-key -- -r ap-east-1
+```
+
+- **AWS IAM Role**
+ 
 you need create a IAM Role which will be attached to EC2/EKS, it need have the access for kms and dynamodb. you need update this policy after your enclave image created with condition check of PCR
+`EnclavePolicyKmsDynamodbTemplate`
 ```
 {
     "Version": "2012-10-17",
@@ -81,7 +96,7 @@ you need create a IAM Role which will be attached to EC2/EKS, it need have the a
                 "kms:Decrypt",
                 "kms:GenerateDataKey"
             ],
-            "Resource": "your kms arn"
+            "Resource": "<Your KMS ARN>"
         },
         {
             "Sid": "VisualEditor1",
@@ -96,23 +111,30 @@ you need create a IAM Role which will be attached to EC2/EKS, it need have the a
 }
 ```
 
-### AWS DynamoDB
-Table name
-- AccountTable
+`EnclaveRole`, attach policy EnclavePolicyKmsDynamodbTemplate, attach the role on EC2
 
-Colume
-- KeyId: kms key id which used for encryption on the wallet private key
-- Name: account name for this account, used for identify wallet
-- EncryptedPrivateKey: encrypted wallet private key
-- Address: the address key of the wallet
-- EncryptedDataKey: the data key used to encrypt the private key
- 
-### AWS KMS
+- **AWS DynamoDB**
 
-#### kms key
-you need create a **Symmetric** kms key, which used for **Encrypt and decrypt**, you need copy this
+```
+Table name:
+AccountTable
+
+Colume:
+KeyId: kms key id which used for encryption on the wallet private key
+Name: account name for this account, used for identify wallet
+EncryptedPrivateKey: encrypted wallet private key
+Address: the address key of the wallet
+EncryptedDataKey: the data key used to encrypt the private key
+``` 
+
+- **vsock-proxy** : before you start the enclave application, you should start the vsock-proxy for kms. below command with run the proxy on parent instance which will forward request on port 8000 to endpoint kms.ap-east-1.amazonaws.com on port 443. you should run it before run enclave
 ```sh
-
+sudo systemctl start nitro-enclaves-allocator.service
+sudo systemctl enable --now nitro-enclaves-vsock-proxy.service
+``` 
+or
+```sh
+vsock-proxy 8000 kms.east-northeast-1.amazonaws.com 443 &
 ```
 
 ### Anychain Ethereum
