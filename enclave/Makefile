@@ -1,13 +1,13 @@
-ARCH := aarch64
+ARCH := x86_64
 RUST_DIR := $(shell readlink -m $(shell dirname $(firstword $(MAKEFILE_LIST))))
 
 build:
 	curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh -s -- -y
-	rustup target install ${ARCH}-unknown-linux-musl
-	cargo build --manifest-path=${RUST_DIR}/Cargo.toml --target=${ARCH}-unknown-linux-musl --release
+	rustup target install ${ARCH}-unknown-linux-gnu
+	cargo build --manifest-path=${RUST_DIR}/Cargo.toml --target=${ARCH}-unknown-linux-gnu --release
 
 server:
-	docker build --build-arg TARGETPLATFORM=$(ARCH)-unknown-linux-musl -t enclave-server -f Dockerfile .
+	docker build --build-arg TARGETPLATFORM=$(ARCH)-unknown-linux-gnu -t enclave-server -f Dockerfile .
 	nitro-cli build-enclave --docker-uri enclave-server:latest --output-file enclave-server.eif
 
 

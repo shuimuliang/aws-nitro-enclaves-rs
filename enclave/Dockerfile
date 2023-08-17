@@ -4,8 +4,8 @@
 FROM rust:latest AS builder
 
 ARG TARGETPLATFORM
-# x86_64-unknown-linux-musl 
-# aarch64-unknown-linux-musl
+# x86_64-unknown-linux-gnu
+# aarch64-unknown-linux-gnu
 
 RUN rustup target add $TARGETPLATFORM
 RUN apt update && apt install -y musl-tools musl-dev
@@ -20,9 +20,8 @@ RUN cargo build --target $TARGETPLATFORM --release
 ####################################################################################################
 ## Final image
 ####################################################################################################
-FROM arm64v8/alpine
+FROM ubuntu
 ARG TARGETPLATFORM
-RUN apk add gcompat libgcc
 
 WORKDIR /app
 
