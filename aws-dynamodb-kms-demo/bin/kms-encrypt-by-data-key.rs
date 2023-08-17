@@ -33,7 +33,7 @@ struct Opt {
 // encrypt decrypt by data key.
 fn encrypt_by_data_key(datakey_plaintext_base64: &str, private_key: &str) {
     let datakey_bytes = general_purpose::STANDARD
-        .decode(&datakey_plaintext_base64)
+        .decode(datakey_plaintext_base64)
         .expect("Input file does not contain valid base 64 characters.");
 
     // Create a key for AES256
@@ -46,8 +46,8 @@ fn encrypt_by_data_key(datakey_plaintext_base64: &str, private_key: &str) {
     let nonce_bytes = [204, 92, 172, 44, 119, 145, 175, 178, 245, 248, 89, 193];
     let nonce = Nonce::from_slice(&nonce_bytes);
 
-    let ciphertext = cipher.encrypt(&nonce, private_key.as_bytes()).unwrap();
-    let ciphertext_base64 = general_purpose::STANDARD.encode(&ciphertext);
+    let ciphertext = cipher.encrypt(nonce, private_key.as_bytes()).unwrap();
+    let ciphertext_base64 = general_purpose::STANDARD.encode(ciphertext);
     dbg!(&ciphertext_base64);
 }
 

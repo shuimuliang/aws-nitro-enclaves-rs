@@ -10,7 +10,6 @@ use aws_sdk_kms::primitives::Blob;
 use aws_sdk_kms::{config::Region, meta::PKG_VERSION, Client, Error};
 use base64::{engine::general_purpose, Engine as _};
 use clap::Parser;
-use std::fs;
 
 #[derive(Debug, Parser)]
 struct Opt {

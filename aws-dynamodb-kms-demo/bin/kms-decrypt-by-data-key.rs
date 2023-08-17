@@ -6,7 +6,7 @@
 #![allow(clippy::result_large_err)]
 
 use aes_gcm::{
-    aead::{Aead, AeadCore, KeyInit},
+    aead::{Aead, KeyInit},
     Aes256Gcm,
     Key, // Or `Aes128Gcm`
     Nonce,
@@ -28,11 +28,11 @@ struct Opt {
 // encrypt decrypt by data key.
 fn decrypt_by_data_key(datakey_plaintext_base64: &str, private_key_base64: &str) {
     let datakey_bytes = general_purpose::STANDARD
-        .decode(&datakey_plaintext_base64)
+        .decode(datakey_plaintext_base64)
         .expect("Input file does not contain valid base 64 characters.");
 
     let private_key_bytes = general_purpose::STANDARD
-        .decode(&private_key_base64)
+        .decode(private_key_base64)
         .expect("Input file does not contain valid base 64 characters.");
 
     // Create a key for AES256
@@ -45,7 +45,7 @@ fn decrypt_by_data_key(datakey_plaintext_base64: &str, private_key_base64: &str)
     let nonce_bytes = [204, 92, 172, 44, 119, 145, 175, 178, 245, 248, 89, 193];
     let nonce = Nonce::from_slice(&nonce_bytes);
 
-    let private_key_origin = cipher.decrypt(&nonce, private_key_bytes.as_ref()).unwrap();
+    let private_key_origin = cipher.decrypt(nonce, private_key_bytes.as_ref()).unwrap();
     let private_key_origin_str = std::str::from_utf8(&private_key_origin).unwrap();
     dbg!(&private_key_origin_str);
 }
