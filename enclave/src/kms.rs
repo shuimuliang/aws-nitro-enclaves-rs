@@ -1,14 +1,16 @@
 use serde_json::{Map, Value};
 use std::env;
-use subprocess::{Exec, Redirection};
+use subprocess::{Popen, PopenConfig, Redirection};
 
 pub fn call_kms_generate_datakey(credential: &Map<String, Value>, key_id: &str) -> String {
+    // TODO: wrap this Error for Popen
     let aws_access_key_id = credential["aws_access_key_id"].as_str().unwrap();
     let aws_secret_access_key = credential["aws_secret_access_key"].as_str().unwrap();
     let aws_session_token = credential["aws_session_token"].as_str().unwrap();
 
-    let output = Exec::cmd("/myip/kmstool_enclave_cli")
-        .args(&[
+    let mut p = Popen::create(
+        &[
+            "/myip/kmstool_enclave_cli",
             "genkey",
             "--region",
             &env::var("REGION").unwrap(),
@@ -24,12 +26,23 @@ pub fn call_kms_generate_datakey(credential: &Map<String, Value>, key_id: &str) 
             key_id,
             "--key-spec",
             "AES-256",
-        ])
-        .stdout(Redirection::Pipe)
-        .capture()
-        .expect("Failed to execute command")
-        .stdout_str();
+        ],
+        PopenConfig {
+            stdout: Redirection::Pipe,
+            ..Default::default()
+        },
+    ).unwrap();
 
-    println!("{}", output);
-    output
+    // Obtain the output from the standard streams.
+    let (out, err) = p.communicate(None).unwrap();
+
+    if let Some(exit_status) = p.poll() {
+        // the process has finished
+    } else {
+        // it is still running, terminate it
+        p.terminate().unwrap();
+    }
+
+    println!("{:?}", out);
+    out.unwrap()
 }

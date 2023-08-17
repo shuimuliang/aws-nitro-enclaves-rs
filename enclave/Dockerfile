@@ -51,7 +51,7 @@ COPY --from=builder /myip/libnsm.so /myip/libnsm.so
 COPY --from=builder /myip/libnsm.so /usr/lib64/libnsm.so
 
 RUN chmod +x /myip/kmstool_enclave_cli
-RUN ls -l /myip/
+# RUN ls -l /myip/
 
 ENV REGION ap-east-1
 ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib64
