@@ -11,21 +11,7 @@ RUN rustup target add $TARGETPLATFORM
 RUN apt update && apt install -y musl-tools musl-dev
 RUN update-ca-certificates
 
-# Create appuser
-ENV USER=myip
-ENV UID=10001
-
-RUN adduser \
-    --disabled-password \
-    --gecos "" \
-    --home "/nonexistent" \
-    --shell "/sbin/nologin" \
-    --no-create-home \
-    --uid "${UID}" \
-    "${USER}"
-
-
-WORKDIR /myip
+WORKDIR /app
 
 COPY ./ .
 
@@ -34,28 +20,21 @@ RUN cargo build --target $TARGETPLATFORM --release
 ####################################################################################################
 ## Final image
 ####################################################################################################
-FROM alpine
+FROM amazonlinux:2
 ARG TARGETPLATFORM
 
-# Import from builder.
-COPY --from=builder /etc/passwd /etc/passwd
-COPY --from=builder /etc/group /etc/group
-
-WORKDIR /myip
+WORKDIR /app
 
 # Copy our build
-COPY --from=builder /myip/target/${TARGETPLATFORM}/release/enclave-server ./
+COPY --from=builder /app/target/${TARGETPLATFORM}/release/enclave-server ./
 # Copy kmstool_enclave_cli
-COPY --from=builder /myip/kmstool_enclave_cli /myip/kmstool_enclave_cli
-COPY --from=builder /myip/libnsm.so /myip/libnsm.so
-COPY --from=builder /myip/libnsm.so /usr/lib64/libnsm.so
-
-RUN chmod +x /myip/kmstool_enclave_cli
-# RUN ls -l /myip/
+COPY --from=builder /app/kmstool_enclave_cli /app/kmstool_enclave_cli
+COPY --from=builder /app/libnsm.so /myip/libnsm.so
+COPY --from=builder /app/libnsm.so /usr/lib64/libnsm.so
 
 ENV REGION ap-east-1
 ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib64
 
-# Use an unprivileged user.
+RUN chmod +x /app/kmstool_enclave_cli
 
-CMD ["./myip/enclave-server", "-p", "7878"]
+CMD ["./app/enclave-server", "-p", "7878"]

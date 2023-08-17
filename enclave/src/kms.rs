@@ -10,7 +10,7 @@ pub fn call_kms_generate_datakey(credential: &Map<String, Value>, key_id: &str) 
 
     let mut p = Popen::create(
         &[
-            "/myip/kmstool_enclave_cli",
+            "/app/kmstool_enclave_cli",
             "genkey",
             "--region",
             &env::var("REGION").unwrap(),
@@ -34,10 +34,10 @@ pub fn call_kms_generate_datakey(credential: &Map<String, Value>, key_id: &str) 
     ).unwrap();
 
     // Obtain the output from the standard streams.
-    let (out, err) = p.communicate(None).unwrap();
+    let (out, _err) = p.communicate(None).unwrap();
 
-    if let Some(exit_status) = p.poll() {
-        // the process has finished
+    if let Some(_exit_status) = p.poll() {
+        // the pocess has finished
     } else {
         // it is still running, terminate it
         p.terminate().unwrap();
