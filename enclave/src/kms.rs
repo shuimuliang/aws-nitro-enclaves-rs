@@ -1,42 +1,35 @@
-use std::process::Command;
-use std::env;
 use serde_json::{Map, Value};
-use std::fs;
+use std::env;
+use subprocess::{Exec, Redirection};
+
 pub fn call_kms_generate_datakey(credential: &Map<String, Value>, key_id: &str) -> String {
     let aws_access_key_id = credential["aws_access_key_id"].as_str().unwrap();
     let aws_secret_access_key = credential["aws_secret_access_key"].as_str().unwrap();
     let aws_session_token = credential["aws_session_token"].as_str().unwrap();
 
-    let _ = list_files("/myip");
-
-    let output = Command::new("/myip/kmstool_enclave_cli")
+    let output = Exec::cmd("/myip/kmstool_enclave_cli")
         .args(&[
             "genkey",
-            "--region", &env::var("REGION").unwrap(),
-            "--proxy-port", "8000",
-            "--aws-access-key-id", &aws_access_key_id,
-            "--aws-secret-access-key", &aws_secret_access_key,
-            "--aws-session-token", &aws_session_token,
-            "--key-id", key_id,
-            "--key-spec","AES-256",
+            "--region",
+            &env::var("REGION").unwrap(),
+            "--proxy-port",
+            "8000",
+            "--aws-access-key-id",
+            &aws_access_key_id,
+            "--aws-secret-access-key",
+            &aws_secret_access_key,
+            "--aws-session-token",
+            &aws_session_token,
+            "--key-id",
+            key_id,
+            "--key-spec",
+            "AES-256",
         ])
-        .output()
-        .expect("Failed to execute command");
+        .stdout(Redirection::Pipe)
+        .capture()
+        .expect("Failed to execute command")
+        .stdout_str();
 
-    let datakey_text = String::from_utf8_lossy(&output.stdout).to_string();
-    datakey_text
-}
-
-fn list_files(directory: &str) -> std::io::Result<()> {
-    let entries = fs::read_dir(directory)?;
-
-    for entry in entries {
-        let entry = entry?;
-        let path = entry.path();
-        if path.is_file() {
-            println!("{}", path.display());
-        }
-    }
-
-    Ok(())
+    println!("{}", output);
+    output
 }

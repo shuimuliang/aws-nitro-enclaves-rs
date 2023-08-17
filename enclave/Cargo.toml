@@ -22,6 +22,7 @@ anychain-ethereum = "0.1.1"
 base64 = "0.21.2"
 libsecp256k1 = "0.7.1"
 rand = "0.8.5"
+subprocess = "0.2.9"
 
 [profile.release]
 strip = true       # Automatically strip symbols from the binary

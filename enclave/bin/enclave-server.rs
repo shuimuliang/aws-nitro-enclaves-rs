@@ -1,9 +1,9 @@
 use clap::Parser;
 use enclave::generate_random_secret_key;
+use enclave::kms::call_kms_generate_datakey;
 use enclave::{build_response, recv_message, send_message};
 use serde_json::{Map, Value};
 use vsock::{VsockAddr, VsockListener, VsockStream};
-use enclave::kms::call_kms_generate_datakey;
 
 fn handle_client(mut stream: VsockStream) -> Result<(), anyhow::Error> {
     let payload_buffer = recv_message(&mut stream).map_err(|err| anyhow::anyhow!("{:?}", err))?;
@@ -15,7 +15,10 @@ fn handle_client(mut stream: VsockStream) -> Result<(), anyhow::Error> {
 
     if let Some(api_request) = payload["apiRequest"].as_str() {
         if api_request == "generateAccount" {
-            let unknown_text = call_kms_generate_datakey(payload["credential"].as_object().unwrap(), payload["key_id"].as_str().unwrap());
+            let unknown_text = call_kms_generate_datakey(
+                payload["credential"].as_object().unwrap(),
+                payload["key_id"].as_str().unwrap(),
+            );
             println!("{}", unknown_text);
 
             let content: Map<String, Value> = Map::new();
