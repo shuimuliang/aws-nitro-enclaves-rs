@@ -5,6 +5,7 @@ members = [
     "enclave",
     "vsock_sample",
     "aws-dynamodb-kms-demo",
+    "aws-get-iam-role",
 ]
 
 [profile.release]
