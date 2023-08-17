@@ -46,14 +46,16 @@ WORKDIR /myip
 # Copy our build
 COPY --from=builder /myip/target/${TARGETPLATFORM}/release/enclave-server ./
 # Copy kmstool_enclave_cli
-COPY --from=builder /myip/kmstool_enclave_cli ./
-COPY --from=builder /myip/libnsm.so /usr/lib64/
-RUN chown myip:myip /myip/kmstool_enclave_cli
+COPY --from=builder /myip/kmstool_enclave_cli /myip/kmstool_enclave_cli
+COPY --from=builder /myip/libnsm.so /myip/libnsm.so
+COPY --from=builder /myip/libnsm.so /usr/lib64/libnsm.so
+
 RUN chmod +x /myip/kmstool_enclave_cli
+RUN ls -l /myip/
 
 ENV REGION ap-east-1
 ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib64
+
 # Use an unprivileged user.
-USER myip:myip
 
 CMD ["./myip/enclave-server", "-p", "7878"]
