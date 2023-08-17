@@ -22,7 +22,7 @@ RUN cargo build --target $TARGETPLATFORM --release
 ####################################################################################################
 FROM arm64v8/alpine
 ARG TARGETPLATFORM
-RUN apk add gcompat
+RUN apk add gcompat libgcc
 
 WORKDIR /app
 
