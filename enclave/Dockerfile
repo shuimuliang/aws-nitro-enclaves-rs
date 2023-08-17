@@ -37,8 +37,6 @@ RUN cargo build --target $TARGETPLATFORM --release
 FROM alpine
 ARG TARGETPLATFORM
 
-ENV REGION ap-east-1
-
 # Import from builder.
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group
@@ -47,10 +45,14 @@ WORKDIR /myip
 
 # Copy our build
 COPY --from=builder /myip/target/${TARGETPLATFORM}/release/enclave-server ./
+# Copy kmstool_enclave_cli
 COPY --from=builder /myip/kmstool_enclave_cli ./
 COPY --from=builder /myip/libnsm.so /usr/lib64/
+RUN chown myip:myip /myip/kmstool_enclave_cli
 RUN chmod +x /myip/kmstool_enclave_cli
 
+ENV REGION ap-east-1
+ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib64
 # Use an unprivileged user.
 USER myip:myip
 
