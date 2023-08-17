@@ -13,16 +13,18 @@ fn handle_client(mut stream: VsockStream) -> Result<(), anyhow::Error> {
         serde_json::from_slice(&payload_buffer).map_err(|err| anyhow::anyhow!("{:?}", err))?;
     println!("{}", payload);
 
-    if payload["apiRequest"] != "generateAccount" {
-        let unknown_text = call_kms_generate_datakey(payload["credential"].as_object().unwrap(), payload["key_id"].as_str().unwrap());
-        println!("{}", unknown_text);
+    if let Some(api_request) = payload["apiRequest"].as_str() {
+        if api_request == "generateAccount" {
+            let unknown_text = call_kms_generate_datakey(payload["credential"].as_object().unwrap(), payload["key_id"].as_str().unwrap());
+            println!("{}", unknown_text);
 
-        let content: Map<String, Value> = Map::new();
-        let response = build_response("generateResponse", content);
+            let content: Map<String, Value> = Map::new();
+            let response = build_response("generateResponse", content);
 
-        let _secret_key = generate_random_secret_key();
+            let _secret_key = generate_random_secret_key();
 
-        send_message(&mut stream, response)?;
+            send_message(&mut stream, response)?;
+        }
     }
 
     Ok(())
