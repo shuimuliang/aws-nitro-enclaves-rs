@@ -32,7 +32,7 @@ COPY --from=builder /app/kmstool_enclave_cli /app/kmstool_enclave_cli
 COPY --from=builder /app/libnsm.so /usr/lib64/libnsm.so
 
 ENV REGION ap-east-1
-ENV LD_LIBRARY_PATH=:/usr/lib64
+ENV LD_LIBRARY_PATH="/usr/lib64":"/lib"
 
 RUN ls -lha /app
 RUN chmod +x /app/kmstool_enclave_cli

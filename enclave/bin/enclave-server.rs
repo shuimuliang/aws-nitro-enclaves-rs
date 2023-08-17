@@ -11,7 +11,7 @@ fn handle_client(mut stream: VsockStream) -> Result<(), anyhow::Error> {
     // Decode the payload as JSON
     let payload: Value =
         serde_json::from_slice(&payload_buffer).map_err(|err| anyhow::anyhow!("{:?}", err))?;
-    println!("{}", payload);
+    // println!("{}", payload);
 
     if let Some(api_request) = payload["apiRequest"].as_str() {
         if api_request == "generateAccount" {
@@ -19,7 +19,7 @@ fn handle_client(mut stream: VsockStream) -> Result<(), anyhow::Error> {
                 payload["credential"].as_object().unwrap(),
                 payload["key_id"].as_str().unwrap(),
             );
-            println!("{}", unknown_text);
+            // println!("{}", unknown_text);
 
             let content: Map<String, Value> = Map::new();
             let response = build_response("generateResponse", content);
