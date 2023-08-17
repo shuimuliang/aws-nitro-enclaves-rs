@@ -20,7 +20,7 @@ RUN cargo build --target $TARGETPLATFORM --release
 ####################################################################################################
 ## Final image
 ####################################################################################################
-FROM amazonlinux:2
+FROM arm64v8/alpine
 ARG TARGETPLATFORM
 
 WORKDIR /app
