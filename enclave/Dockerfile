@@ -24,6 +24,8 @@ RUN cargo build --target $TARGETPLATFORM --release
 FROM ubuntu
 ARG TARGETPLATFORM
 
+RUN apt-get update && apt-get install -y ca-certificates
+
 WORKDIR /app
 
 # Copy our build
