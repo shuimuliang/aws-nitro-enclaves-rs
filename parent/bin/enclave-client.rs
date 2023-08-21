@@ -1,5 +1,8 @@
 use clap::Parser;
-use parent::{build_payload, get_iam_token, recv_message, send_message};
+use parent::{
+    iam::get_iam_token,
+    protocol_helper::{build_payload, recv_message, send_message},
+};
 use serde_json::{Map, Value};
 use vsock::{VsockAddr, VsockStream};
 
