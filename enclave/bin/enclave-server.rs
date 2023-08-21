@@ -1,7 +1,9 @@
 use clap::Parser;
-use enclave::generate_random_secret_key;
-use enclave::kms::call_kms_generate_datakey;
-use enclave::{build_response, recv_message, send_message};
+use enclave::{
+    chain_eth::generate_random_secret_key,
+    kms::call_kms_generate_datakey,
+    protocol_helper::{build_response, recv_message, send_message},
+};
 use serde_json::{Map, Value};
 use vsock::{VsockAddr, VsockListener, VsockStream};
 
@@ -11,7 +13,6 @@ fn handle_client(mut stream: VsockStream) -> Result<(), anyhow::Error> {
     // Decode the payload as JSON
     let payload: Value =
         serde_json::from_slice(&payload_buffer).map_err(|err| anyhow::anyhow!("{:?}", err))?;
-    // println!("{}", payload);
 
     if let Some(api_request) = payload["apiRequest"].as_str() {
         if api_request == "generateAccount" {
@@ -49,6 +50,7 @@ fn main() -> Result<(), anyhow::Error> {
     for stream in listener.incoming() {
         let stream = stream.unwrap();
 
+        // write your own code here
         let _ = handle_client(stream);
     }
 

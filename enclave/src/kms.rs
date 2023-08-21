@@ -3,7 +3,6 @@ use std::env;
 use subprocess::{Popen, PopenConfig, Redirection};
 
 pub fn call_kms_generate_datakey(credential: &Map<String, Value>, key_id: &str) -> String {
-    // TODO: wrap this Error for Popen
     let aws_access_key_id = credential["aws_access_key_id"].as_str().unwrap();
     let aws_secret_access_key = credential["aws_secret_access_key"].as_str().unwrap();
     let aws_session_token = credential["aws_session_token"].as_str().unwrap();
@@ -31,7 +30,8 @@ pub fn call_kms_generate_datakey(credential: &Map<String, Value>, key_id: &str) 
             stdout: Redirection::Pipe,
             ..Default::default()
         },
-    ).unwrap();
+    )
+    .unwrap();
 
     // Obtain the output from the standard streams.
     let (out, _err) = p.communicate(None).unwrap();
