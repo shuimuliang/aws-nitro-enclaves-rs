@@ -49,4 +49,4 @@ COPY --from=builder /myip/target/${TARGETPLATFORM}/release/enclave-client ./
 # Use an unprivileged user.
 USER myip:myip
 
-CMD ["./myip/enclave-client", "-c", "16", "-p", "7878", "-k", "205b2e71-5e9a-4446-9b9e-962c5cb042bd"]
+CMD ["./myip/enclave-client", "-c", "16", "-p", "7878", "-k", "205b2e71-5e9a-4446-9b9e-962c5cb042bd", "-t", "AccountTable"]

@@ -25,7 +25,7 @@ struct Opt {
     #[structopt(short, long)]
     key_id: String,
 
-    /// account name for this account, used for identify wallet
+    /// encrypted private key of the wallet
     #[structopt(short, long)]
     encrypted_private_key: String,
 
