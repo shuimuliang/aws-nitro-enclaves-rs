@@ -74,7 +74,7 @@ async fn main() -> Result<(), anyhow::Error> {
         &dynamodb_client,
         Item {
             name: user_id,
-            key_id: key_id,
+            key_id,
             encrypted_private_key: json["encryptedPrivateKey"].as_str().unwrap().to_string(),
             address: json["address"].as_str().unwrap().to_string(),
             encrypted_data_key: json["encryptedDataKey"].as_str().unwrap().to_string(),
