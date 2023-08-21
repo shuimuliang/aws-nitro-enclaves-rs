@@ -73,11 +73,11 @@ async fn main() -> Result<(), anyhow::Error> {
     add_item(
         &dynamodb_client,
         Item {
-            name: json["name"].as_str().unwrap().to_string(),
+            name: json["user_id"].as_str().unwrap().to_string(),
             key_id: key_id,
-            encrypted_private_key: json["encrypted_private_key"].as_str().unwrap().to_string(),
+            encrypted_private_key: json["encryptedPrivateKey"].as_str().unwrap().to_string(),
             address: json["address"].as_str().unwrap().to_string(),
-            encrypted_data_key: json["encrypted_data_key"].as_str().unwrap().to_string(),
+            encrypted_data_key: json["encryptedDataKey"].as_str().unwrap().to_string(),
         },
         &table,
     )
