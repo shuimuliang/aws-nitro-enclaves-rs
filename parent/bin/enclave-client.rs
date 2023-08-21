@@ -6,7 +6,7 @@ use parent::{
     scenario::add::{add_item, Item},
 };
 
-use aws_sdk_dynamodb::{error::DisplayErrorContext, Client};
+use aws_sdk_dynamodb::Client;
 use serde_json::{Map, Value};
 use vsock::{VsockAddr, VsockStream};
 
