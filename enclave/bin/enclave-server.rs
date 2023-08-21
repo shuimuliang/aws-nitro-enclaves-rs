@@ -1,8 +1,9 @@
 use clap::Parser;
 use enclave::{
     chain_eth::generate_random_secret_key,
-    kms::call_kms_generate_datakey,
+    kms::call_kms_generate_data_key,
     protocol_helper::{build_response, recv_message, send_message},
+    crypto_utils::encrypt_by_data_key,
 };
 use serde_json::{Map, Value};
 use vsock::{VsockAddr, VsockListener, VsockStream};
@@ -16,16 +17,25 @@ fn handle_client(mut stream: VsockStream) -> Result<(), anyhow::Error> {
 
     if let Some(api_request) = payload["apiRequest"].as_str() {
         if api_request == "generateAccount" {
-            let unknown_text = call_kms_generate_datakey(
+            let raw_data_key = call_kms_generate_data_key(
                 payload["credential"].as_object().unwrap(),
                 payload["key_id"].as_str().unwrap(),
             );
-            // println!("{}", unknown_text);
 
-            let content: Map<String, Value> = Map::new();
+            let parts: Vec<&str> = raw_data_key.split("\n").collect();
+
+            let data_key_ciphertext = parts[0].trim_start_matches("CIPHERTEXT: ");
+            let data_key_plaintext = parts[1].trim_start_matches("PLAINTEXT: ");
+
+            let (secret_key , ethereum_address) = generate_random_secret_key();
+            let encrypted_private_key: String = encrypt_by_data_key(data_key_plaintext, &secret_key);
+
+            let mut content: Map<String, Value> = Map::new();
+            content.insert("encryptedPrivateKey".to_string(), Value::String(encrypted_private_key));
+            content.insert("address".to_string(), Value::String(ethereum_address));
+            content.insert("encryptedDataKey".to_string(), Value::String(data_key_ciphertext.to_string()));
+
             let response = build_response("generateResponse", content);
-
-            let _secret_key = generate_random_secret_key();
 
             send_message(&mut stream, response)?;
         }

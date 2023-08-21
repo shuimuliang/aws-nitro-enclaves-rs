@@ -15,6 +15,7 @@ WORKDIR /app
 
 COPY ./ .
 
+RUN cargo test --package enclave
 RUN cargo build --target $TARGETPLATFORM --release
 
 ####################################################################################################
@@ -34,8 +35,8 @@ COPY --from=builder /app/libnsm.so /usr/lib64/libnsm.so
 ENV REGION ap-east-1
 ENV LD_LIBRARY_PATH="/usr/lib64":"/lib"
 
-RUN ls -lha /app
-RUN ls -lha /lib
+# RUN ls -lha /app
+# RUN ls -lha /lib
 RUN chmod +x /app/kmstool_enclave_cli
 RUN chmod +x /app/enclave-server
 

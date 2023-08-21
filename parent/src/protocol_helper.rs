@@ -1,7 +1,5 @@
 use byteorder::{ByteOrder, LittleEndian};
-use reqwest::Error;
 use serde_json::{json, Map, Value};
-use std::collections::HashMap;
 use std::io::{Read, Write};
 use std::mem::size_of;
 use vsock::VsockStream;
