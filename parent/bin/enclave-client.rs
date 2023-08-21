@@ -56,7 +56,7 @@ async fn main() -> Result<(), anyhow::Error> {
         .map(|(k, v)| (k, Value::String(v)))
         .collect();
     let user_id = "UID10000".to_string();
-    let payload = build_payload("generateAccount", credential, user_id, key_id.clone());
+    let payload = build_payload("generateAccount", credential, user_id.clone(), key_id.clone());
 
     // send payload
     send_message(&mut stream, payload)?;
@@ -73,7 +73,7 @@ async fn main() -> Result<(), anyhow::Error> {
     add_item(
         &dynamodb_client,
         Item {
-            name: json["user_id"].as_str().unwrap().to_string(),
+            name: user_id,
             key_id: key_id,
             encrypted_private_key: json["encryptedPrivateKey"].as_str().unwrap().to_string(),
             address: json["address"].as_str().unwrap().to_string(),
