@@ -8,11 +8,11 @@ pub fn generate_random_secret_key() -> (String, String) {
     let secret_key = SecretKey::random(&mut rng);
     let secret_key_bytes = secret_key.serialize();
     let secret_key_base64 = general_purpose::STANDARD.encode(secret_key_bytes);
-    println!("Generated secret key: {:?}", secret_key);
-    println!("Generated secret key (base64): {:?}", secret_key_base64);
+    // println!("Generated secret key: {:?}", secret_key);
+    // println!("Generated secret key (base64): {:?}", secret_key_base64);
 
     let public_key = PublicKey::from_secret_key(&secret_key);
-    println!("Generated public key: {:?}", public_key);
+    // println!("Generated public key: {:?}", public_key);
 
     let ethereum_public_key = EthereumPublicKey::from_secp256k1_public_key(public_key);
     let ethereum_address = EthereumAddress::checksum_address(&ethereum_public_key);

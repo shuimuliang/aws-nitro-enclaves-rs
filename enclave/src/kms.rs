@@ -43,7 +43,6 @@ pub fn call_kms_generate_data_key(credential: &Map<String, Value>, key_id: &str)
         p.terminate().unwrap();
     }
 
-    println!("{:?}", out);
     out.unwrap()
 }
 
@@ -55,8 +54,6 @@ pub fn parse_raw_data_key(input: String) -> (String, String) {
     let ciphertext = parts[0].trim_start_matches("CIPHERTEXT: ");
     let plaintext = parts[1].trim_start_matches("PLAINTEXT: ");
 
-    // println!("Ciphertext: {}", ciphertext);
-    // println!("Plaintext: {}", plaintext);
     (ciphertext.to_string(), plaintext.to_string())
 }
 
