@@ -59,13 +59,19 @@ vsock_sample/src/lib.rs
 ### enclave server
 enclave/bin/enclave-server
 
-How to build:
+How to build & run:
 ```sh
 cd enclave
 make server
+nitro-cli run-enclave --cpu-count 2 --memory 512 --enclave-cid 16 --eif-path enclave-server.eif --debug-mode
 ```
 
 ### parent client
+How to build & run:
+```sh
+cargo build --release
+../target/release/enclave-client -c 16 -p 7878 -k <kms key id> -t AccountTable
+```
 
 # important configurations
 when you try to run the Nitro Enclave application, you should configure below things
